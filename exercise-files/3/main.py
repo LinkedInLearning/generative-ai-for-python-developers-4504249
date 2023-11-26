@@ -1,13 +1,19 @@
 import openai
+from dotenv import load_dotenv
 from colorama import Fore
 
-# Constants
 
+# Constants
+MODEL_ENGINE = "gpt-3.5-turbo"
+MESSAGE_SYSTEM = "You are a helpful assistant"
+messages = [{"role": "system", "content": MESSAGE_SYSTEM}]
+
+load_dotenv()
 client = openai.OpenAI()
 
 
-def generate_chat_completion(user_input):
-    print("You typed: " + user_input)
+def generate_chat_completion(user_input=""):
+    pass
 
 
 def main():
@@ -33,15 +39,18 @@ def start_chat():
     print("\n")
     print("      NEW CHAT       ")
     print("---------------------")
+    generate_chat_completion()
 
-    user_input = input(Fore.WHITE + "You: ")
+    while True:
+        user_input = input(Fore.WHITE + "You: ")
 
-    if user_input.lower() == "x":
-        main()
-    else:
-        generate_chat_completion(user_input)
+        if user_input.lower() == "x":
+            main()
+            break
+        else:
+            pass
+            # generate
 
 
 if __name__ == "__main__":
-    # Load the environment variables - set up the OpenAI API client
     main()
