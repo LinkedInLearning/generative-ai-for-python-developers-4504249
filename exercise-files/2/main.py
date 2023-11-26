@@ -6,9 +6,12 @@ from dotenv import load_dotenv
 
 
 # Load the environment variables - set up the OpenAI API client
-
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Set up the model and prompt
+LANGUAGE_MODEL = "gpt-3.5-turbo-instruct"
+PROMPT_TEST = "This is a test prompt. Say this is a test"
 
 
 def get_tokens(user_input: str) -> int:
@@ -56,6 +59,7 @@ def ask():
     # Exit
     if user_input == "x":
         start()
+    else:
 
 
 if __name__ == "__main__":
