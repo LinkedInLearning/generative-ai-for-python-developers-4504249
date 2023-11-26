@@ -60,6 +60,8 @@ def ask():
     if user_input == "x":
         start()
     else:
+        print(Fore.BLUE + f"A: ")
+        print(Fore.WHITE + "\n-------------------------------------------------")
 
 
 if __name__ == "__main__":
