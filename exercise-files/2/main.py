@@ -1,4 +1,3 @@
-import os
 import openai
 import tiktoken
 from colorama import Fore
@@ -6,6 +5,7 @@ from dotenv import load_dotenv
 
 
 # Load the environment variables - set up the OpenAI API client
+load_dotenv()
 client = openai.OpenAI()
 
 # Set up the model and prompt
