@@ -6,8 +6,7 @@ from dotenv import load_dotenv
 
 
 # Load the environment variables - set up the OpenAI API client
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = openai.OpenAI()
 
 # Set up the model and prompt
 LANGUAGE_MODEL = "gpt-3.5-turbo-instruct"
@@ -54,14 +53,27 @@ def ask():
     )
     print(Fore.BLUE + "\n\x1B[3m" + instructions + "\x1B[0m" + Fore.RESET)
 
-    user_input = input("Q: ")
+    while True:
+        user_input = input("Q: ")
 
-    # Exit
-    if user_input == "x":
-        start()
-    else:
-        print(Fore.BLUE + f"A: ")
-        print(Fore.WHITE + "\n-------------------------------------------------")
+        # Exit
+        if user_input == "x":
+            start()
+        else:
+            completion = client.completions.create(
+                model="gpt-3.5-turbo-instruct",
+                prompt=str(user_input),
+                max_tokens=100,
+                temperature=0,
+            )
+
+            response = completion.choices[0].text.replace
+            ("\n", "").replace("\r", "")
+
+            get_tokens(response)
+
+            print(Fore.BLUE + f"A: {response}" + Fore.RESET)
+            print(Fore.WHITE + "\n-------------------------------------------------")
 
 
 if __name__ == "__main__":
