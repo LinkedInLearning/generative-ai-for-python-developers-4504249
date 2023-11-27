@@ -13,7 +13,10 @@ client = openai.OpenAI()
 
 
 def generate_chat_completion(user_input=""):
-    pass
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=messages,
+    )
 
 
 def main():
