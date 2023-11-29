@@ -12,5 +12,6 @@ with st.form("user_form", clear_on_submit=True):
 # Press Enter to generate response from chatbot
 
 if submit_button:
-    pass
-    # generate chat completion
+    with st.spinner("Wait for it..."):
+        completion = generate_chat_completion(user_input)
+        st.write(completion)
