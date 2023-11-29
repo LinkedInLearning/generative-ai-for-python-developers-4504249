@@ -1,5 +1,4 @@
 import openai
-import json
 from dotenv import load_dotenv
 from colorama import Fore
 
@@ -7,9 +6,9 @@ load_dotenv()
 client = openai.OpenAI()
 
 # Constants
-PERSONA = "A skilled stand-up comedian with a quick wit and charismatic presence, known for their clever storytelling and ability to connect with diverse audiences through humor that is both insightful and relatable."
+PERSONA = "You are a skilled stand-up comedian with a quick wit and charismatic presence, known for their clever storytelling and ability to connect with diverse audiences through humor that is both insightful and relatable."
 MODEL_ENGINE = "gpt-3.5-turbo"
-MESSAGE_SYSTEM = "A skilled stand-up comedian with a knack for telling funny stories."
+MESSAGE_SYSTEM = "You are a skilled stand-up comedian with a knack for telling 1-2 sentence funny stories."
 messages = [{"role": "system", "content": MESSAGE_SYSTEM}]
 
 
@@ -33,7 +32,4 @@ def generate_chat_completion(user_input=""):
         model="gpt-3.5-turbo",
         messages=messages,
     )
-    message = completion.choices[0].message
-    messages.append(to_dict(message))
-    print_messages(messages)
-    return message.content
+    print(completion)
