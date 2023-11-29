@@ -12,4 +12,4 @@ with st.form("user_form", clear_on_submit=True):
 # Press Enter to generate response from chatbot
 
 if submit_button:
-    generate_chat_completion(user_input)
+    # generate chat completion
