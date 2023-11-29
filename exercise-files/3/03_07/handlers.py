@@ -8,6 +8,7 @@ load_dotenv()
 client = openai.OpenAI()
 
 # Constants
+PERSONA = "A skilled stand-up comedian with a quick wit and charismatic presence, known for their clever storytelling and ability to connect with diverse audiences through humor that is both insightful and relatable."
 MODEL_ENGINE = "gpt-3.5-turbo"
 MESSAGE_SYSTEM = "A skilled stand-up comedian with a knack for telling funny stories."
 messages = [{"role": "system", "content": MESSAGE_SYSTEM}]
