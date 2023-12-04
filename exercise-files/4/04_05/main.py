@@ -23,7 +23,38 @@ if submit_button:
 
 def display_gallery():
     """Display all images in the gallery"""
-    pass
+    images = get_files()
+    length = len(images)
+    st.markdown(margin, unsafe_allow_html=True)
+
+    for i in range(0, length, 2):
+        with st.container():
+            col1, col2 = st.columns(2)
+
+            with col1:
+                if i < length:
+                    image_resized = images[i]["file"].resize((600, 400))
+                    st.image(
+                        image_resized,
+                        caption=images[i]["title"],
+                        width=None,
+                        use_column_width=None,
+                        clamp=False,
+                        channels="RGB",
+                        output_format="auto",
+                    )
+            with col2:
+                if i + 1 < length:
+                    image_resized = images[i + 1]["file"].resize((600, 400))
+                    st.image(
+                        image_resized,
+                        caption=images[i + 1]["title"],
+                        width=None,
+                        use_column_width=None,
+                        clamp=False,
+                        channels="RGB",
+                        output_format="auto",
+                    )
 
 
 if __name__ == "__main__":
