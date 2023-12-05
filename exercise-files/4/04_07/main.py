@@ -12,7 +12,7 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Streamlit App
-st.title("Audio transcription")  # Add a title
+st.title("Audio transcriptions")  # Add a title
 
 # Custom style for blue button
 st.markdown(
@@ -43,4 +43,8 @@ if submit_button and uploaded_file is not None:
         ) as temp_file:
             temp_file.write(uploaded_file.getvalue())
             temp_file_path = temp_file.name
-            pass
+            transcript = speech_to_text(temp_file_path)
+            st.success("File transcribed successfully!")
+            st.divider()
+            st.markdown(f" :blue {transcript}")
+            st.audio(temp_file_path)
