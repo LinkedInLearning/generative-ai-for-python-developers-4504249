@@ -25,6 +25,10 @@ use `pip3 on a mac`
 
 `pip install git+https://github.com/openai/whisper.git`
 
+[README](https://github.com/openai/whisper)
+
+`pip install -U openai-whisper`
+
 ### install ffmpeg (requirements for the whisper library)
 
 #### On macOS:
