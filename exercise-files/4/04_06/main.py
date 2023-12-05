@@ -43,10 +43,4 @@ if submit_button and uploaded_file is not None:
         ) as temp_file:
             temp_file.write(uploaded_file.getvalue())
             temp_file_path = temp_file.name
-
-            print(temp_file_path)
-            # Now pass the file path to the speech_to_text function
-            transcript = speech_to_text(temp_file_path)
-            # Display the transcript
-            st.markdown(f":blue `{transcript}`")
-            st.audio(temp_file_path)
+            pass
