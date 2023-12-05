@@ -3,7 +3,7 @@ import tempfile
 import openai
 import os
 from dotenv import load_dotenv
-from handlers import speech_to_text
+from utils import speech_to_text
 
 # Load environment variables
 load_dotenv()
