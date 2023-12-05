@@ -3,7 +3,7 @@ import tempfile
 import openai
 import os
 from dotenv import load_dotenv
-from utils import speech_to_text
+from utils import speech_to_text, speech_to_translation, save_file
 
 # Load environment variables
 load_dotenv()
@@ -12,7 +12,7 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Streamlit App
-st.title("Audio transcriptions")  # Add a title
+st.title("Audio transcriptions & translations")  # Add a title
 
 # Custom style for blue button
 st.markdown(
@@ -43,8 +43,17 @@ if submit_button and uploaded_file is not None:
         ) as temp_file:
             temp_file.write(uploaded_file.getvalue())
             temp_file_path = temp_file.name
-            transcript = speech_to_text(temp_file_path)
+            filename = temp_file_path.split("/")[-1]
+            original_transcript = speech_to_text(temp_file_path)
+            translated_transcript = speech_to_translation(temp_file_path)
+            save_file(original_transcript, f"transcriptions/{uploaded_file.name}.txt")
+            save_file(
+                translated_transcript,
+                f"transcriptions/{uploaded_file.name}_translated.txt",
+            )
             st.success("File transcribed successfully!")
             st.divider()
-            st.markdown(f" :blue {transcript}")
+            st.markdown(f":blue `{original_transcript}`")
+            st.divider()
+            st.markdown(f":green `{translated_transcript}`")
             st.audio(temp_file_path)
