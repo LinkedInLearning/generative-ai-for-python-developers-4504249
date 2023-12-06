@@ -1,9 +1,8 @@
 import openai
-import os
 import json
-import requests
 from colorama import Fore
 from dotenv import load_dotenv
+from utils import get_current_weather
 
 
 load_dotenv()
@@ -52,7 +51,7 @@ def generate_response(user_input):
 
 
 available_functions = {
-    "get_current_weather": {},
+    "get_current_weather": get_current_weather,
 }  # only one function in this example, but you can have multiple
 
 
