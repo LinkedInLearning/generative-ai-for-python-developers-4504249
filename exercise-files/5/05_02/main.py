@@ -8,6 +8,28 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_current_weather",
+            "description": "Get the current weather in a given location",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state, e.g. San Francisco, CA",
+                    },
+                    "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
+                },
+                "required": ["location"],
+            },
+        },
+    }
+]
+
+
 # Constants
 MODEL_ENGINE = "gpt-3.5-turbo"
 messages = [{"role": "system", "content": "You are a helpful assistant"}]
@@ -18,15 +40,20 @@ client = openai.OpenAI()
 def generate_response(user_input):
     messages.append({"role": "user", "content": user_input})
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=messages
+        model="gpt-3.5-turbo-1106",
+        messages=messages,
+        tools=tools,
+        tool_choice="auto",  # auto is default, but we'll be explicit
     )
-    messages.append(response.choices[0].message)
     return response.choices[0].message
 
 
 def main():
-    print(Fore.CYAN + "Bot: Hello, I am a helpful assistant. Type 'exit' to quit." + Fore.RESET)
+    print(
+        Fore.CYAN
+        + "Bot: Hello, I am a helpful assistant. Type 'exit' to quit."
+        + Fore.RESET
+    )
 
     while True:
         user_input = input("You: ")
@@ -37,7 +64,7 @@ def main():
 
         # Step 1: send the conversation and available functions to GPT
         message_response = generate_response(user_input)
-        print(Fore.CYAN + "Bot: " + message_response.content + Fore.RESET)
+        print(message_response)
 
         # Step 2: check if GPT wanted to call a function and generate an extended response
 
