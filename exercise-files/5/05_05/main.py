@@ -4,7 +4,6 @@ from colorama import Fore
 from dotenv import load_dotenv
 from utils import get_current_weather
 
-
 load_dotenv()
 
 tools = [
