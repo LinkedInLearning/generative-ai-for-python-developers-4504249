@@ -1,5 +1,4 @@
 import openai
-import json
 from dotenv import load_dotenv
 from colorama import Fore
 
@@ -13,14 +12,18 @@ MESSAGE_SYSTEM = "A skilled stand-up comedian with a knack for telling funny sto
 messages = [{"role": "system", "content": MESSAGE_SYSTEM}]
 
 
+def to_dict(obj):
+    return {
+        "content": obj.content,
+        "role": obj.role,
+    }
+
+
 def print_messages(messages):
-    messages = [
-        json.dumps(message) for message in messages if message["role"] != "system"
-    ]
+    messages = [message for message in messages if message["role"] != "system"]
     for message in messages:
-        m = json.loads(message)
-        role = "Bot" if m["role"] == "assistant" else "You"
-        print(Fore.BLUE + role + ": " + m["content"])
+        role = "Bot" if message["role"] == "assistant" else "You"
+        print(Fore.BLUE + role + ": " + message["role"])
     return messages
 
 
@@ -29,5 +32,4 @@ def generate_chat_completion(user_input=""):
         model="gpt-3.5-turbo",
         messages=messages,
     )
-
     print(completion)
