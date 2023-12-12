@@ -1,47 +1,33 @@
 import os
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
-
+from langchain.document_loaders import TextLoader
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.text_splitter import (
+    CharacterTextSplitter,
+)
 from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
 )
+from langchain.prompts import ChatPromptTemplate
 from langchain.schema import StrOutputParser
-
-from langchain.embeddings.openai import OpenAIEmbeddings
-
-
-from langchain.document_loaders import TextLoader
-from langchain.text_splitter import CharacterTextSplitter
+from langchain.schema.runnable import RunnablePassthrough
 from langchain.vectorstores import Chroma
+from colorama import Fore
 
 load_dotenv()
 
-embeddings = OpenAIEmbeddings()
+# https://python.langchain.com/docs/modules/data_connection/vectorstores/
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 LANGUAGE_MODEL = "gpt-3.5-turbo-instruct"
 
 template: str = """/
-    You are a customer support Chatbot /
-    You assist users with general inquiries/
-    and technical issues. You will answer to the {question} only based on
-    the knowledge {context} you are trained on /
-    if you don't know the answer, you will ask the user to rephrase the question  or
-    redirect the user the support@abc-shoes.com  /
-    always be friendly and helpful  /
-    at the end of the conversation, ask the user if they are satisfied with the answer  /
-    if yes, say goodbye and end the conversation  /
+    You are a customer support specialist /
+    question: {question}. You assist users with general inquiries based on {context} /
+    and  technical issues. /
     """
-
-str_parser = StrOutputParser()
-embeddings = OpenAIEmbeddings()
-
-# basic example of how to get started with the OpenAI Chat models
-# The above cell assumes that your OpenAI API key is set in your environment variables.
-chatmodel = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.3)
-
 system_message_prompt = SystemMessagePromptTemplate.from_template(template)
 human_message_prompt = HumanMessagePromptTemplate.from_template(
     input_variables=["question", "context"],
@@ -51,37 +37,45 @@ chat_prompt_template = ChatPromptTemplate.from_messages(
     [system_message_prompt, human_message_prompt]
 )
 
+model = ChatOpenAI()
+
+
+def format_docs(docs):
+    return "\n\n".join([d.page_content for d in docs])
+
 
 def load_documents():
-    loader = TextLoader("./docs/faq_abc.txt")
-    documents = loader.load()
-
-    # split it into chunks
+    """Load a file from path, split it into chunks, embed each chunk and load it into the vector store."""
+    raw_documents = TextLoader("./docs/faq_abc.txt").load()
     text_splitter = CharacterTextSplitter(chunk_size=100, chunk_overlap=0)
-    return text_splitter.split_documents(documents)
+    return text_splitter.split_documents(raw_documents)
 
 
-def load_embeddings(documents):
-    # load documents to the vector store - load it into Chroma
-    db = Chroma.from_documents(documents, embeddings)
-
-    # search the database by similarity
+def load_embeddings(documents, user_query):
+    """Create a vector store from a set of documents."""
+    db = Chroma.from_documents(documents, OpenAIEmbeddings())
     docs = db.similarity_search(user_query)
     print(docs)
     return db.as_retriever()
 
 
-def query():
-    user_query = "I want to return a pair of shoes?"
+def generate_response(retriever, query):
+    pass
+    # Create a prompt template using a template from the config module and input variables
+    # representing the context and question.
+    # create the prompt
 
+    chain = (
+        {"context": retriever, "question": RunnablePassthrough()}
+        | chat_prompt_template
+        | model
+        | StrOutputParser()
+    )
+    return chain.invoke(query)
+
+
+def query(query):
     documents = load_documents()
-    retriever = load_embeddings(documents)
-
-    # return results
-    context = documents[0].page_content
-
-    # LCEL makes it easy to build complex chains from basic components, and supports out of the box functionality such as streaming, parallelism, and logging.
-    chain = chat_prompt_template | chatmodel | str_parser
-    message = chain.invoke({"question": user_query, "context": context})
-    print(message)
-    return message
+    retriever = load_embeddings(documents, query)
+    response = generate_response(retriever, query)
+    return response
