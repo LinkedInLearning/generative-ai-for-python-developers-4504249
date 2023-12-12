@@ -26,7 +26,7 @@ LANGUAGE_MODEL = "gpt-3.5-turbo-instruct"
 template: str = """/
     You are a customer support Chatbot /
     You assist users with general inquiries/
-    and technical issues. You will answer to the {question} based on
+    and technical issues. You will answer to the {question} only based on
     the knowledge {context} you are trained on /
     if you don't know the answer, you will ask the user to rephrase the question  or
     redirect the user the support@abc-shoes.com  /
@@ -40,11 +40,9 @@ embeddings = OpenAIEmbeddings()
 
 # basic example of how to get started with the OpenAI Chat models
 # The above cell assumes that your OpenAI API key is set in your environment variables.
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.3)
+chatmodel = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.3)
 
-system_message_prompt = SystemMessagePromptTemplate.from_template(
-    "You are a helpful assistant that translates"
-)
+system_message_prompt = SystemMessagePromptTemplate.from_template(template)
 human_message_prompt = HumanMessagePromptTemplate.from_template(
     input_variables=["question", "context"],
     template="{question}",
@@ -55,9 +53,9 @@ chat_prompt_template = ChatPromptTemplate.from_messages(
 
 
 def main():
-    user_query = "Do you ship to Europe?"
+    user_query = "I want to return a pair of shoes?"
 
-    loader = TextLoader("./docs/faq.txt")
+    loader = TextLoader("./docs/faq_abc.txt")
     documents = loader.load()
 
     # split it into chunks
@@ -70,14 +68,13 @@ def main():
     # search the database by similarity
     docs = db.similarity_search(user_query)
 
-    # print results
-    print(docs[0].page_content)
+    # return results
+    context = docs[0].page_content
 
     # LCEL makes it easy to build complex chains from basic components, and supports out of the box functionality such as streaming, parallelism, and logging.
-    chain = chat_prompt | model | str_parser
-    # message = chain.invoke({"question": user_input})
-    # print(message)
-    # load the document and split it into chunks
+    chain = chat_prompt_template | chatmodel | str_parser
+    message = chain.invoke({"question": user_query, "context": context})
+    print(message)
 
 
 if __name__ == "__main__":
