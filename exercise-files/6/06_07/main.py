@@ -52,30 +52,36 @@ chat_prompt_template = ChatPromptTemplate.from_messages(
 )
 
 
-def main():
-    user_query = "I want to return a pair of shoes?"
-
+def load_documents():
     loader = TextLoader("./docs/faq_abc.txt")
     documents = loader.load()
 
     # split it into chunks
     text_splitter = CharacterTextSplitter(chunk_size=100, chunk_overlap=0)
-    documents = text_splitter.split_documents(documents)
+    return text_splitter.split_documents(documents)
 
+
+def load_embeddings(documents):
     # load documents to the vector store - load it into Chroma
     db = Chroma.from_documents(documents, embeddings)
 
     # search the database by similarity
     docs = db.similarity_search(user_query)
+    print(docs)
+    return db.as_retriever()
+
+
+def query():
+    user_query = "I want to return a pair of shoes?"
+
+    documents = load_documents()
+    retriever = load_embeddings(documents)
 
     # return results
-    context = docs[0].page_content
+    context = documents[0].page_content
 
     # LCEL makes it easy to build complex chains from basic components, and supports out of the box functionality such as streaming, parallelism, and logging.
     chain = chat_prompt_template | chatmodel | str_parser
     message = chain.invoke({"question": user_query, "context": context})
     print(message)
-
-
-if __name__ == "__main__":
-    main()
+    return message
