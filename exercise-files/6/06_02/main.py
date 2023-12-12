@@ -35,12 +35,16 @@ def main():
 
     # prompt value
     prompt_value = chat_prompt.invoke({"question": user_input})
-    print(prompt_value.to_string())
+    # print(prompt_value.to_string())
 
     # model response
     messages = chat_prompt.format_prompt(question=user_input).to_messages()
+    response = model.invoke(messages)
+    print(response)
 
     # sring output parser
+    content = str_parser.invoke(response)
+    print(content)
 
     # LCEL makes it easy to build complex chains from basic components, and supports out of the box functionality such as streaming, parallelism, and logging.
 
