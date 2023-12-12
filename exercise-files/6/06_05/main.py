@@ -9,14 +9,16 @@ from langchain.prompts.chat import (
 )
 from langchain.schema import StrOutputParser
 
+from langchain.embeddings.openai import OpenAIEmbedding
+
 
 from langchain.document_loaders import TextLoader
-from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
 
 load_dotenv()
 
+openai_embeddings = OpenAIEmbedding()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 LANGUAGE_MODEL = "gpt-3.5-turbo-instruct"
@@ -35,17 +37,6 @@ chat_prompt = ChatPromptTemplate.from_messages(
     [system_message_prompt, human_message_prompt]
 )
 
-# load the document and split it into chunks
-
-loader = TextLoader("./docs/faq.txt")
-documents = loader.load()
-
-# split it into chunks
-text_splitter = CharacterTextSplitter(chunk_size=100, chunk_overlap=0)
-docs = text_splitter.split_documents(documents)
-
-print(docs)
-
 
 def main():
     user_input = "Do you ship to Europe?"
@@ -54,6 +45,16 @@ def main():
     chain = chat_prompt | model | str_parser
     # message = chain.invoke({"question": user_input})
     # print(message)
+    # load the document and split it into chunks
+
+    loader = TextLoader("./docs/faq.txt")
+    documents = loader.load()
+
+    # split it into chunks
+    text_splitter = CharacterTextSplitter(chunk_size=100, chunk_overlap=0)
+    documents = text_splitter.split_documents(documents)
+
+    # load documents to the vector store
 
 
 if __name__ == "__main__":
