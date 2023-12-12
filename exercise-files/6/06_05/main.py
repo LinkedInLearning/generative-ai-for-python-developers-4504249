@@ -39,7 +39,7 @@ chat_prompt = ChatPromptTemplate.from_messages(
 
 
 def main():
-    user_query = "Do you ship to Europe?"
+    user_input = "Do you ship to Europe?"
 
     # LCEL makes it easy to build complex chains from basic components, and supports out of the box functionality such as streaming, parallelism, and logging.
     chain = chat_prompt | model | str_parser
@@ -60,7 +60,8 @@ def main():
     db = Chroma.from_documents(documents, embeddings)
 
     # query it
-    docs = db.similarity_search(user_query)
+    query = "What did the president say about Ketanji Brown Jackson"
+    docs = db.similarity_search(query)
 
     # print results
     print(docs[0].page_content)
