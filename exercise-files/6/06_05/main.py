@@ -9,7 +9,7 @@ from langchain.prompts.chat import (
 )
 from langchain.schema import StrOutputParser
 
-from langchain.embeddings.openai import OpenAIEmbedding
+from langchain.embeddings.openai import OpenAIEmbeddings
 
 
 from langchain.document_loaders import TextLoader
@@ -18,7 +18,7 @@ from langchain.vectorstores import Chroma
 
 load_dotenv()
 
-openai_embeddings = OpenAIEmbedding()
+embeddings = OpenAIEmbeddings()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 LANGUAGE_MODEL = "gpt-3.5-turbo-instruct"
@@ -39,7 +39,7 @@ chat_prompt = ChatPromptTemplate.from_messages(
 
 
 def main():
-    user_input = "Do you ship to Europe?"
+    user_query = "Do you ship to Europe?"
 
     # LCEL makes it easy to build complex chains from basic components, and supports out of the box functionality such as streaming, parallelism, and logging.
     chain = chat_prompt | model | str_parser
@@ -55,6 +55,15 @@ def main():
     documents = text_splitter.split_documents(documents)
 
     # load documents to the vector store
+    # load it into Chroma
+
+    db = Chroma.from_documents(documents, embeddings)
+
+    # query it
+    docs = db.similarity_search(user_query)
+
+    # print results
+    print(docs[0].page_content)
 
 
 if __name__ == "__main__":
