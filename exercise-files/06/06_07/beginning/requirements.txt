@@ -1,0 +1,10 @@
+chromadb==0.4.17
+colorama==0.4.6
+langchain==0.0.338
+openai==1.3.5
+python-dateutil==2.8.2
+python-dotenv==1.0.0
+requests==2.31.0
+streamlit==1.24.0
+streamlit-chat==0.1.1
+tiktoken==0.5.2
