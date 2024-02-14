@@ -20,15 +20,9 @@ To resolve this issue:
     Add changes to git using this command: git add .
 	Commit changes using this command: git commit -m "some message"
 
-## Installing
-1. To use these exercise files, you must have the following installed:
-	- [list of requirements for course]
-2. Clone this repository into your local machine using the terminal (Mac), CMD (Windows), or a GUI tool like SourceTree.
-3. [Course-specific instructions]
-
 
 [0]: # (Replace these placeholder URLs with actual course URLs)
 
-[lil-course-url]: https://www.linkedin.com/learning/
-[lil-thumbnail-url]: http://
+[lil-course-url]: https://www.linkedin.com/learning/generative-ai-for-python-developers
+[lil-thumbnail-url]: https://media.licdn.com/dms/image/D4D0DAQG7pjzOFAYjWA/learning-public-crop_675_1200/0/1707868438526?e=2147483647&v=beta&t=OYrT3o9Npcc2tlh50dVFk1Uv_dSOIWZqHNn2Ozrxrg4
 
