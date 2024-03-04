@@ -1,6 +1,7 @@
 import openai
 from dotenv import load_dotenv
 from colorama import Fore
+import os
 
 
 # Constants
@@ -48,6 +49,12 @@ def start_chat():
             main()
             break
         else:
+            completion = client.completions.create(
+                model="gpt-3.5-turbo-instruct",
+                prompt=str(user_input),
+                max_tokens=100,
+                temperature=0,
+            )
             pass
             # generate
 
